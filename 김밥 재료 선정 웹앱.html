@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>의견을 조정하며 토의해요 - 김밥 속재료 정하기</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Gowun Dodum & Noto Sans KR) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #F7F9FA;
+        }
+        .font-title {
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+        .ingredient-card {
+            transition: all 0.2s ease-in-out;
+        }
+        .ingredient-card:hover {
+            transform: translateY(-2px);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- Navigation / Header -->
+    <header class="bg-amber-400 border-b-4 border-amber-500 shadow-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center space-x-3">
+                <span class="text-3xl">🍙</span>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold font-title text-slate-900">의견을 조정하며 토의해요</h1>
+                    <p class="text-xs md:text-sm font-medium text-slate-700">3단원. 국어 모둠 활동 - 우리 모둠 최고의 김밥 속재료 5개 정하기</p>
+                </div>
+            </div>
+            <!-- Student Information Input -->
+            <div class="flex items-center space-x-2 bg-amber-300/80 p-1.5 rounded-lg border border-amber-500/50">
+                <div class="flex items-center bg-white px-2 py-1 rounded shadow-inner text-sm">
+                    <span class="text-slate-500 font-medium mr-1">모둠:</span>
+                    <input type="text" id="group-name" value="" placeholder="모둠명 입력" class="w-20 md:w-28 bg-transparent outline-none font-bold text-amber-900">
+                </div>
+                <div class="flex items-center bg-white px-2 py-1 rounded shadow-inner text-sm">
+                    <span class="text-slate-500 font-medium mr-1">이름:</span>
+                    <input type="text" id="student-name" placeholder="홍길동" class="w-16 md:w-20 bg-transparent outline-none font-bold text-amber-900">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-6xl mx-auto px-4 py-6 w-full flex-grow">
+
+        <!-- Activity Process Banner -->
+        <section class="mb-6 bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="text-base font-bold text-slate-700 flex items-center">
+                    <i class="fa-solid fa-list-check text-amber-500 mr-2"></i> 토의 진행 순서
+                </h2>
+                <button id="reset-btn" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1 rounded-full font-medium transition">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> 처음부터 다시
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-2 text-center text-xs md:text-sm">
+                <div class="step-indicator bg-amber-50 border-2 border-amber-400 p-2.5 rounded-xl font-bold text-amber-900 flex items-center justify-center space-x-2">
+                    <span class="w-5 h-5 rounded-full bg-amber-400 text-white flex items-center justify-center text-xs">1</span>
+                    <span>1. 나만의 재료 5개 고르기</span>
+                </div>
+                <div class="step-indicator bg-slate-50 border border-slate-200 p-2.5 rounded-xl text-slate-500 flex items-center justify-center space-x-2">
+                    <span class="w-5 h-5 rounded-full bg-slate-300 text-white flex items-center justify-center text-xs">2</span>
+                    <span>2. 말하기 순서 정하기</span>
+                </div>
+                <div class="step-indicator bg-slate-50 border border-slate-200 p-2.5 rounded-xl text-slate-500 flex items-center justify-center space-x-2">
+                    <span class="w-5 h-5 rounded-full bg-slate-300 text-white flex items-center justify-center text-xs">3</span>
+                    <span>3. 친구 의견 듣고 메모</span>
+                </div>
+                <div class="step-indicator bg-slate-50 border border-slate-200 p-2.5 rounded-xl text-slate-500 flex items-center justify-center space-x-2">
+                    <span class="w-5 h-5 rounded-full bg-slate-300 text-white flex items-center justify-center text-xs">4</span>
+                    <span>4. 최종 의견 조정 (5개 결정)</span>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- LEFT COLUMN: Reference Helper & Mini Game (1 col) -->
+            <div class="space-y-6">
+                
+                <!-- Random Speaker Selector (가위바위보 / 순서 정하기) -->
+                <div class="bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100 rounded-2xl p-5 shadow-sm">
+                    <h3 class="font-bold text-indigo-900 mb-2 flex items-center text-base">
+                        <i class="fa-solid fa-hand-scissors text-indigo-500 mr-2"></i> 2. 말할 순서 정하기
+                    </h3>
+                    <p class="text-xs text-indigo-700 mb-3">가위바위보나 순서 뽑기로 발표 순서를 정해 한 명씩 돌아가며 이유를 말해보세요!</p>
+                    
+                    <div class="bg-white rounded-xl p-3 shadow-inner border border-indigo-100 text-center">
+                        <div id="random-speaker-display" class="text-lg font-bold text-indigo-600 my-2">
+                            준비가 되면 버튼을 누르세요!
+                        </div>
+                        <button onclick="pickRandomSpeaker()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold py-2 px-4 rounded-lg shadow transition active:scale-95">
+                            🎲 순서 뽑기 (랜덤)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Reference Library (재료 정보 미리보기) -->
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-slate-800 mb-3 flex items-center text-base">
+                        <i class="fa-solid fa-book-open text-emerald-500 mr-2"></i> 재료 영양 & 특징 도감
+                    </h3>
+                    <p class="text-xs text-slate-500 mb-3">뒷받침 자료를 참고하여 이유(식감, 맛, 영양소, 효능)를 적어보세요.</p>
+                    
+                    <div class="space-y-2.5 max-h-80 overflow-y-auto pr-1" id="reference-list">
+                        <!-- JS Dynamic Insertion -->
+                    </div>
+                </div>
+
+                <!-- Discussion Rules Tip Box -->
+                <div class="bg-amber-50 rounded-2xl p-4 border border-amber-200 text-xs text-amber-900">
+                    <h4 class="font-bold mb-1 flex items-center text-sm">
+                        <i class="fa-regular fa-lightbulb mr-1.5 text-amber-600"></i> 의견 조정 시 지켜야 할 예의
+                    </h4>
+                    <ul class="list-disc list-inside space-y-1 text-amber-800">
+                        <li>친구의 말을 끝까지 경청해요.</li>
+                        <li>재료를 선택한 근거와 이유를 살펴봐요.</li>
+                        <li>상대방의 의견에서 공감되는 부분을 칭찬해 주세요.</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- RIGHT / CENTER COLUMN: Step Forms (2 cols) -->
+            <div class="lg:col-span-2 space-y-6">
+
+                <!-- 1. 내가 고른 재료 5개와 그 이유 -->
+                <section class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center">
+                            <span class="w-7 h-7 rounded-full bg-amber-400 text-slate-900 flex items-center justify-center font-black text-sm mr-2 shadow-sm">1</span>
+                            내가 고른 재료 5개와 그 이유
+                        </h3>
+                        <span id="selected-count-badge" class="text-xs px-2.5 py-1 rounded-full font-bold bg-slate-100 text-slate-600">
+                            선택됨: 0 / 5개
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-4">아래 재료 버튼을 클릭하여 5개를 고르고, 그 재료를 추천하는 이유(식감, 맛, 효능 등)를 적어보세요.</p>
+
+                    <!-- Ingredient Selector Grid -->
+                    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 mb-4" id="ingredient-selector">
+                        <!-- Dynamic Buttons generated by JS -->
+                    </div>
+
+                    <!-- Selected Ingredients Table / List Input -->
+                    <div class="space-y-3" id="my-ingredients-inputs">
+                        <p class="text-xs font-semibold text-slate-400 text-center py-6 border-2 border-dashed border-slate-200 rounded-xl">
+                            위 목록에서 재료 5개를 클릭해 선택해주세요.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- 2. 친구들이 고른 재료 5개 -->
+                <section class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center">
+                            <span class="w-7 h-7 rounded-full bg-amber-400 text-slate-900 flex items-center justify-center font-black text-sm mr-2 shadow-sm">2</span>
+                            친구들이 고른 재료 메모
+                        </h3>
+                        <button onclick="addFriendColumn()" class="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-600 border border-indigo-200 px-2.5 py-1 rounded-lg font-bold transition">
+                            <i class="fa-solid fa-plus mr-1"></i> 친구 추가
+                        </button>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-3">돌아가며 발표를 들으면서, 모둠 친구들이 추천한 재료와 이유를 간단히 적어보세요.</p>
+
+                    <div id="friends-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Dynamic Friend Cards -->
+                    </div>
+                </section>
+
+                <!-- 3. 우리 모둠이 넣기로 한 김밥 재료 5개는? -->
+                <section class="bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl p-6 shadow-md text-white">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-lg md:text-xl font-bold font-title flex items-center text-white">
+                            <span class="w-8 h-8 rounded-full bg-white text-orange-600 flex items-center justify-center font-black text-base mr-2.5 shadow">3</span>
+                            우리 모둠이 최종 결정한 김밥 속재료 5개!
+                        </h3>
+                    </div>
+                    <p class="text-xs text-amber-100 mb-4">의견을 조정하여 모둠원 전원이 합의한 최고의 김밥 조합 5가지를 고르고 제출해 보세요.</p>
+
+                    <!-- Selection & Gimap Preview -->
+                    <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 mb-4">
+                        <h4 class="text-xs font-bold text-amber-100 mb-2 uppercase tracking-wider">최종 속재료 선택 (5개)</h4>
+                        <div class="flex flex-wrap gap-2" id="final-chips-container">
+                            <!-- Dynamic clickable chips -->
+                        </div>
+                    </div>
+
+                    <!-- Visual Gimbap Builder Preview -->
+                    <div class="bg-white rounded-xl p-4 text-slate-800 shadow-inner">
+                        <h4 class="text-sm font-bold text-slate-700 mb-2 text-center flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-utensils text-orange-500"></i>
+                            [ <span id="final-group-label">우리</span> ] 모둠의 완성된 김밥 단면
+                        </h4>
+                        
+                        <!-- Canvas-Based Realistic Gimbap Visualizer -->
+                        <div class="relative w-full flex flex-col items-center justify-center my-3">
+                            <div class="relative bg-amber-50/50 p-4 rounded-2xl border-2 border-dashed border-amber-200 flex flex-col items-center justify-center w-full max-w-sm shadow-sm">
+                                <canvas id="gimbap-canvas" width="300" height="300" class="drop-shadow-xl transition-all duration-300"></canvas>
+                                <p id="canvas-placeholder-text" class="text-xs text-slate-400 font-medium mt-2 text-center">
+                                    상단에서 재료 5개를 선택하면 실제 김밥 단면 그림이 완성됩니다!
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Final Reason / Summary Textarea -->
+                        <div class="mt-4">
+                            <label class="block text-xs font-bold text-slate-600 mb-1">우리 모둠이 이 5가지 재료로 선정한 종합 이유</label>
+                            <textarea id="final-summary-reason" rows="2" class="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-amber-400" placeholder="예: 단백질과 식이섬유의 균형을 맞추고, 색감과 식감이 뛰어난 최고의 조합으로 최종 결정했습니다."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Print / Export Action Buttons -->
+                    <div class="mt-5 flex flex-wrap gap-2 justify-end">
+                        <button onclick="window.print()" class="bg-white/20 hover:bg-white/30 text-white font-bold text-xs py-2 px-4 rounded-lg transition border border-white/30">
+                            <i class="fa-solid fa-print mr-1"></i> 활동지 인쇄하기
+                        </button>
+                        <button onclick="submitDiscussion()" class="bg-slate-900 hover:bg-slate-800 text-amber-300 font-bold text-xs py-2 px-4 rounded-lg shadow-lg transition transform active:scale-95">
+                            <i class="fa-solid fa-check-circle mr-1"></i> 활동 완료하기
+                        </button>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-100 border-t border-slate-200 py-4 mt-8 text-center text-xs text-slate-500">
+        <p>초등 국어 3학년 2학기 3단원 의견을 조정하며 토의해요 활동 앱</p>
+    </footer>
+
+    <!-- Completion Modal -->
+    <div id="complete-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 text-center shadow-2xl transform transition-all">
+            <div class="text-5xl mb-3">🎉</div>
+            <h3 class="text-xl font-bold font-title text-slate-800 mb-2">토의 활동 완수!</h3>
+            <p class="text-xs text-slate-600 mb-4">친구들의 이야기를 경청하고 의견을 잘 조정하여 멋진 모둠 김밥을 완성했습니다.</p>
+            <div id="modal-summary-content" class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-left text-xs mb-4 space-y-1">
+                <!-- Summary content -->
+            </div>
+            <button onclick="closeModal()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-2.5 rounded-xl transition">
+                확인
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Master Ingredient List with Information & Visual Canvas Specs
+        const INGREDIENTS_DATA = [
+            { name: "시금치", color: "bg-emerald-600 text-white", tag: "영양/비타민", info: "비타민A와 철분이 풍부하여 눈 건강에 좋고 몸의 면역력을 높여줍니다.", drawColor: "#15803d", strokeColor: "#166534", shape: "leaf-cluster" },
+            { name: "계란", color: "bg-yellow-400 text-slate-900", tag: "단백질/맛", info: "단백질이 풍부하여 성장기 어린이에게 좋고, 부드러운 식감을 줍니다.", drawColor: "#facc15", strokeColor: "#eab308", shape: "block" },
+            { name: "우엉", color: "bg-amber-800 text-white", tag: "식감/식이섬유", info: "면역력을 강화해주고, 식이섬유와 영양소가 풍부해 소화를 잘되게 도와줍니다.", drawColor: "#78350f", strokeColor: "#451a03", shape: "sticks" },
+            { name: "햄", color: "bg-rose-400 text-slate-900", tag: "맛/단백질", info: "짭조름한 맛으로 김밥의 감칠맛을 살려주고 풍부한 풍미를 줍니다.", drawColor: "#fb7185", strokeColor: "#e11d48", shape: "block" },
+            { name: "치즈", color: "bg-amber-300 text-slate-900", tag: "칼슘/고소함", info: "칼슘이 많아 뼈 건강에 좋고 고소하고 부드러운 풍미를 더합니다.", drawColor: "#fde047", strokeColor: "#facc15", shape: "thin-layer" },
+            { name: "당근", color: "bg-orange-500 text-white", tag: "색감/식감", info: "비타민A가 많아 눈에 좋고, 아삭아삭한 식감과 예쁜 주황색을 더합니다.", drawColor: "#f97316", strokeColor: "#ea580c", shape: "julienne" },
+            { name: "오이", color: "bg-green-500 text-white", tag: "수분/식감", info: "수분이 많아 청량감을 주며, 아삭한 식감으로 깔끔한 맛을 냅니다.", drawColor: "#22c55e", strokeColor: "#15803d", shape: "crescent" },
+            { name: "깻잎", color: "bg-emerald-700 text-white", tag: "향/무기질", info: "특유의 상쾌한 향이 나며 참치 등 다른 재료와의 궁합이 훌륭합니다.", drawColor: "#047857", strokeColor: "#065f46", shape: "wrapper-ring" },
+            { name: "단무지", color: "bg-yellow-300 text-slate-900", tag: "식감/새콤함", info: "새콤달콤한 맛과 오독오독한 식감으로 김밥의 맛 중심을 잡아줍니다.", drawColor: "#fef08a", strokeColor: "#fde047", shape: "rect-long" },
+            { name: "어묵", color: "bg-amber-200 text-slate-900", tag: "식감/감칠맛", info: "쫄깃한 식감과 짭조름한 감칠맛으로 조화로운 맛을 만들어 줍니다.", drawColor: "#fde68a", strokeColor: "#d97706", shape: "folded" },
+            { name: "김치", color: "bg-red-500 text-white", tag: "유산균/매콤함", info: "유산균이 풍부해 장 건강에 좋으며 느낄 수 있는 개운한 맛을 줍니다.", drawColor: "#ef4444", strokeColor: "#b91c1c", shape: "kimchi-texture" },
+            { name: "게맛살", color: "bg-red-400 text-white", tag: "식감/단백질", info: "부드럽고 쫄깃하여 부모님과 어린이 모두가 좋아하는 대표 재료입니다.", drawColor: "#f87171", strokeColor: "#dc2626", shape: "crab-stick" }
+        ];
+
+        // App State
+        let mySelectedIngredients = []; // max 5
+        let friendCount = 0;
+        let finalSelectedIngredients = []; // max 5
+
+        window.onload = function() {
+            renderReferenceList();
+            renderIngredientSelector();
+            initFriendsContainer();
+            renderFinalChips();
+
+            // Sync Group Name Live Input
+            document.getElementById('group-name').addEventListener('input', function(e) {
+                document.getElementById('final-group-label').textContent = e.target.value.trim() || '우리';
+            });
+
+            // Initial Canvas Setup
+            drawGimbapCanvas();
+        };
+
+        // Render Reference Info Cards
+        function renderReferenceList() {
+            const listEl = document.getElementById('reference-list');
+            listEl.innerHTML = INGREDIENTS_DATA.map(item => `
+                <div class="p-2.5 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200 text-xs transition">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="font-bold text-slate-800">${item.name}</span>
+                        <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full ${item.color}">${item.tag}</span>
+                    </div>
+                    <p class="text-slate-600 leading-relaxed">${item.info}</p>
+                </div>
+            `).join('');
+        }
+
+        // Render Selector Buttons
+        function renderIngredientSelector() {
+            const container = document.getElementById('ingredient-selector');
+            container.innerHTML = INGREDIENTS_DATA.map(item => {
+                const isSelected = mySelectedIngredients.includes(item.name);
+                return `
+                    <button type="button" 
+                            onclick="toggleMyIngredient('${item.name}')"
+                            class="ingredient-card py-2 px-1 text-xs font-bold rounded-xl border flex flex-col items-center justify-center gap-1 transition ${
+                                isSelected 
+                                ? 'bg-amber-400 border-amber-500 text-slate-900 shadow-sm ring-2 ring-amber-300' 
+                                : 'bg-white border-slate-200 text-slate-700 hover:border-amber-300'
+                            }">
+                        <span>${item.name}</span>
+                        <i class="fa-solid ${isSelected ? 'fa-check text-amber-900' : 'fa-plus text-slate-300'} text-[10px]"></i>
+                    </button>
+                `;
+            }).join('');
+
+            updateMyIngredientsInputSection();
+        }
+
+        // Toggle Selection for Step 1
+        function toggleMyIngredient(name) {
+            const idx = mySelectedIngredients.indexOf(name);
+            if (idx > -1) {
+                mySelectedIngredients.splice(idx, 1);
+            } else {
+                if (mySelectedIngredients.length >= 5) {
+                    alert('내가 고를 수 있는 재료는 최대 5개입니다!');
+                    return;
+                }
+                mySelectedIngredients.push(name);
+            }
+            renderIngredientSelector();
+        }
+
+        // Update Input Rows for Step 1 Reasons
+        function updateMyIngredientsInputSection() {
+            const container = document.getElementById('my-ingredients-inputs');
+            const badge = document.getElementById('selected-count-badge');
+            
+            badge.textContent = `선택됨: ${mySelectedIngredients.length} / 5개`;
+            
+            if (mySelectedIngredients.length === 0) {
+                container.innerHTML = `
+                    <p class="text-xs font-semibold text-slate-400 text-center py-6 border-2 border-dashed border-slate-200 rounded-xl">
+                        위 목록에서 재료 5개를 클릭해 선택해주세요.
+                    </p>`;
+                return;
+            }
+
+            container.innerHTML = mySelectedIngredients.map((item, index) => {
+                const itemData = INGREDIENTS_DATA.find(d => d.name === item);
+                return `
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                        <div class="flex items-center gap-2 min-w-[100px]">
+                            <span class="w-5 h-5 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center">${index + 1}</span>
+                            <span class="font-bold text-xs text-slate-800 ${itemData ? itemData.color : ''} px-2 py-0.5 rounded">${item}</span>
+                        </div>
+                        <input type="text" 
+                               placeholder="${itemData ? itemData.info : '선택한 이유를 적어보세요 (예: 영양소, 식감, 맛 등)'}" 
+                               class="w-full p-2 text-xs bg-white border border-slate-200 rounded-lg outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400">
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Step 2: Friends dynamic list
+        function initFriendsContainer() {
+            addFriendColumn('친구 1');
+            addFriendColumn('친구 2');
+        }
+
+        function addFriendColumn(defaultName = '') {
+            friendCount++;
+            const container = document.getElementById('friends-container');
+            const friendId = `friend-${friendCount}`;
+            
+            const card = document.createElement('div');
+            card.className = "bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2 relative";
+            card.id = friendId;
+            
+            card.innerHTML = `
+                <div class="flex justify-between items-center pb-2 border-b border-slate-200">
+                    <input type="text" value="${defaultName || '친구 ' + friendCount}" class="font-bold text-xs bg-white border border-slate-200 px-2 py-1 rounded w-24 text-slate-800 outline-none focus:border-indigo-400">
+                    <button onclick="document.getElementById('${friendId}').remove()" class="text-slate-400 hover:text-rose-500 text-xs">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="space-y-1.5">
+                    <input type="text" placeholder="선택한 재료 5개 (예: 시금치, 계란, 햄, 우엉, 당근)" class="w-full text-xs p-1.5 bg-white border border-slate-200 rounded outline-none focus:border-indigo-300">
+                    <textarea rows="2" placeholder="친구 의견과 그 이유 메모" class="w-full text-xs p-1.5 bg-white border border-slate-200 rounded outline-none focus:border-indigo-300"></textarea>
+                </div>
+            `;
+            container.appendChild(card);
+        }
+
+        // Step 3: Final Selection Chips
+        function renderFinalChips() {
+            const container = document.getElementById('final-chips-container');
+            container.innerHTML = INGREDIENTS_DATA.map(item => {
+                const isSelected = finalSelectedIngredients.includes(item.name);
+                return `
+                    <button type="button" 
+                            onclick="toggleFinalIngredient('${item.name}')"
+                            class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 ${
+                                isSelected 
+                                ? 'bg-white text-orange-600 shadow-md ring-2 ring-white' 
+                                : 'bg-white/20 text-white hover:bg-white/30'
+                            }">
+                        <span>${item.name}</span>
+                        ${isSelected ? '<i class="fa-solid fa-check text-xs"></i>' : ''}
+                    </button>
+                `;
+            }).join('');
+
+            drawGimbapCanvas();
+        }
+
+        function toggleFinalIngredient(name) {
+            const idx = finalSelectedIngredients.indexOf(name);
+            if (idx > -1) {
+                finalSelectedIngredients.splice(idx, 1);
+            } else {
+                if (finalSelectedIngredients.length >= 5) {
+                    alert('우리 모둠의 최종 재료는 5개까지만 선택할 수 있습니다.');
+                    return;
+                }
+                finalSelectedIngredients.push(name);
+            }
+            renderFinalChips();
+        }
+
+        function drawGimbapCanvas() {
+            const canvas = document.getElementById('gimbap-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const placeholder = document.getElementById('canvas-placeholder-text');
+
+            const width = canvas.width;
+            const height = canvas.height;
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+
+            if (finalSelectedIngredients.length === 0) {
+                if (placeholder) placeholder.style.display = 'block';
+                
+                // Draw empty seaweed/rice outline guideline
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, 130, 0, Math.PI * 2);
+                ctx.strokeStyle = "#cbd5e1";
+                ctx.setLineDash([6, 6]);
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                ctx.fillStyle = "#94a3b8";
+                ctx.font = "bold 14px 'Noto Sans KR', sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("재료를 선택해주세요", centerX, centerY);
+                return;
+            }
+
+            if (placeholder) placeholder.style.display = 'none';
+
+            // 1. Draw Outer Seaweed Layer (Gim - 김)
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 132, 0, Math.PI * 2);
+            ctx.fillStyle = "#111827"; // Dark brown/black gim color
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "#030712";
+            ctx.stroke();
+
+            // Gim shine / texture detail
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 131, -Math.PI * 0.7, -Math.PI * 0.3);
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+            ctx.stroke();
+
+            // 2. Draw Rice Layer (Bap - 밥)
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 124, 0, Math.PI * 2);
+            ctx.fillStyle = "#fcfbf7"; // Warm rice white
+            ctx.fill();
+
+            // Rice Grains Texture (scattered small specs)
+            ctx.fillStyle = "#e2e8f0";
+            for (let i = 0; i < 40; i++) {
+                const angle = (i / 40) * Math.PI * 2;
+                const r = 100 + (i % 3) * 7;
+                const rx = centerX + Math.cos(angle) * r;
+                const ry = centerY + Math.sin(angle) * r;
+                ctx.beginPath();
+                ctx.ellipse(rx, ry, 3, 1.5, angle, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // 3. Inner Filling Boundary (Center Core)
+            const coreRadius = 90;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, coreRadius, 0, Math.PI * 2);
+            ctx.fillStyle = "#fffbeb";
+            ctx.fill();
+
+            // 4. Draw Selected Ingredients inside Gimbap
+            const count = finalSelectedIngredients.length;
+            const sliceAngle = (Math.PI * 2) / count;
+
+            finalSelectedIngredients.forEach((name, index) => {
+                const itemData = INGREDIENTS_DATA.find(d => d.name === name) || {
+                    drawColor: "#fbbf24", strokeColor: "#d97706", shape: "block"
+                };
+
+                const startAngle = index * sliceAngle - Math.PI / 2;
+                const endAngle = startAngle + sliceAngle;
+                const midAngle = startAngle + sliceAngle / 2;
+
+                ctx.save();
+
+                // Draw specific ingredient shapes & textures
+                const r = 52;
+                const ix = centerX + Math.cos(midAngle) * 32;
+                const iy = centerY + Math.sin(midAngle) * 32;
+
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, coreRadius - 2, startAngle, endAngle);
+                ctx.closePath();
+                ctx.fillStyle = itemData.drawColor;
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = itemData.strokeColor;
+                ctx.stroke();
+
+                // Detailed texture per ingredient type
+                if (name === "당근" || name === "우엉") {
+                    // Shredded / julienne lines
+                    ctx.strokeStyle = itemData.strokeColor;
+                    ctx.lineWidth = 1.5;
+                    for (let step = -20; step <= 20; step += 8) {
+                        ctx.beginPath();
+                        ctx.arc(centerX, centerY, coreRadius - 15 + (step % 10), startAngle + 0.1, endAngle - 0.1);
+                        ctx.stroke();
+                    }
+                } else if (name === "계란") {
+                    // Soft egg roll texture dots
+                    ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
+                    ctx.beginPath();
+                    ctx.arc(ix, iy, 12, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (name === "시금치" || name === "깻잎") {
+                    // Leafy texture
+                    ctx.fillStyle = itemData.strokeColor;
+                    for (let k = 0; k < 5; k++) {
+                        const lx = ix + (Math.random() - 0.5) * 20;
+                        const ly = iy + (Math.random() - 0.5) * 20;
+                        ctx.beginPath();
+                        ctx.arc(lx, ly, 4 + Math.random() * 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                } else if (name === "단무지" || name === "치즈") {
+                    // Smooth bright highlights
+                    ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+                    ctx.beginPath();
+                    ctx.arc(ix, iy, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (name === "게맛살" || name === "햄") {
+                    // Meat fibers / stripes
+                    ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(centerX + Math.cos(startAngle + 0.15) * 30, centerY + Math.sin(startAngle + 0.15) * 30);
+                    ctx.lineTo(centerX + Math.cos(startAngle + 0.15) * 80, centerY + Math.sin(startAngle + 0.15) * 80);
+                    ctx.stroke();
+                }
+
+                // Ingredient Label Pin in Gimbap slice
+                const labelDist = 52;
+                const lx = centerX + Math.cos(midAngle) * labelDist;
+                const ly = centerY + Math.sin(midAngle) * labelDist;
+
+                // Pill Badge for Ingredient Name
+                ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
+                ctx.beginPath();
+                ctx.roundRect(lx - 22, ly - 10, 44, 20, 10);
+                ctx.fill();
+
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 11px 'Noto Sans KR', sans-serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText(name, lx, ly);
+
+                ctx.restore();
+            });
+
+            // Center Sesame Seeds Decoration (깨소금)
+            ctx.fillStyle = "#fef08a";
+            for (let s = 0; s < 8; s++) {
+                const sa = (s / 8) * Math.PI * 2;
+                const sx = centerX + Math.cos(sa) * 12;
+                const sy = centerY + Math.sin(sa) * 12;
+                ctx.beginPath();
+                ctx.ellipse(sx, sy, 2.5, 1.2, sa, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function toggleFinalIngredient(name) {
+            const idx = finalSelectedIngredients.indexOf(name);
+            if (idx > -1) {
+                finalSelectedIngredients.splice(idx, 1);
+            } else {
+                if (finalSelectedIngredients.length >= 5) {
+                    alert('우리 모둠의 최종 재료는 5개까지만 선택할 수 있습니다.');
+                    return;
+                }
+                finalSelectedIngredients.push(name);
+            }
+            renderFinalChips();
+        }
+
+        // Render Gimbap Slice Visual
+        function renderGimbapVisual() {
+            const container = document.getElementById('gimbap-visual-container');
+            if (finalSelectedIngredients.length === 0) {
+                container.innerHTML = `<span class="text-xs text-slate-400 font-medium">재료 5개를 선택하면 김밥이 완성됩니다!</span>`;
+                return;
+            }
+
+            container.innerHTML = finalSelectedIngredients.map(name => {
+                const itemData = INGREDIENTS_DATA.find(d => d.name === name);
+                const colorClass = itemData ? itemData.color : 'bg-slate-300 text-slate-800';
+                return `
+                    <div class="${colorClass} flex-1 h-full rounded-full flex items-center justify-center px-1 text-[11px] font-bold shadow-inner transform transition hover:scale-105">
+                        ${name}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Random Speaker Selection Feature
+        function pickRandomSpeaker() {
+            const display = document.getElementById('random-speaker-display');
+            const groupName = document.getElementById('group-name').value || '우리 모둠';
+            
+            let count = 0;
+            const names = ["첫 번째 순서", "두 번째 순서", "세 번째 순서", "네 번째 순서"];
+            
+            display.classList.add('animate-pulse');
+            
+            const timer = setInterval(() => {
+                display.textContent = names[Math.floor(Math.random() * names.length)] + " 발표!";
+                count++;
+                if (count > 10) {
+                    clearInterval(timer);
+                    display.classList.remove('animate-pulse');
+                    const winnerNum = Math.floor(Math.random() * 4) + 1;
+                    display.innerHTML = `🎉 <span class="text-indigo-900">${winnerNum}번 말할 순서</span>부터 시작!`;
+                }
+            }, 100);
+        }
+
+        // Complete & Show Modal
+        function submitDiscussion() {
+            if (finalSelectedIngredients.length !== 5) {
+                alert('우리 모둠이 넣기로 한 재료 5개를 모두 골라주세요! (현재 ' + finalSelectedIngredients.length + '개 선택)');
+                return;
+            }
+
+            const studentName = document.getElementById('student-name').value || '익명 학생';
+            const groupName = document.getElementById('group-name').value || '미정';
+            const summaryReason = document.getElementById('final-summary-reason').value || '이유 미작성';
+
+            const modalSummary = document.getElementById('modal-summary-content');
+            modalSummary.innerHTML = `
+                <p><strong>모둠:</strong> ${groupName} / <strong>작성자:</strong> ${studentName}</p>
+                <p><strong>최종 선정 재료:</strong> ${finalSelectedIngredients.join(', ')}</p>
+                <p class="pt-1 border-t border-amber-200 mt-1"><strong>선정 이유:</strong> ${summaryReason}</p>
+            `;
+
+            document.getElementById('complete-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('complete-modal').classList.add('hidden');
+        }
+
+        // Reset All
+        document.getElementById('reset-btn').addEventListener('click', function() {
+            if (confirm('모든 입력 내용을 초기화하시겠습니까?')) {
+                mySelectedIngredients = [];
+                finalSelectedIngredients = [];
+                renderIngredientSelector();
+                renderFinalChips();
+                document.getElementById('final-summary-reason').value = '';
+            }
+        });
+    </script>
+</body>
+</html>
